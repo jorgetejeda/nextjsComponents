@@ -29,7 +29,7 @@ const Index = () => (
           estatus: "Pending",
         },
       ]}
-      countRowView={2}
+      recordPerView={1}
       cellClassConditions={{
         columnName: "STATUS",
         onLoad: (value) =>

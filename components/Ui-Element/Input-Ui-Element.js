@@ -1,61 +1,26 @@
 import PropTypes from "prop-types";
 import { Form, InputGroup } from "react-bootstrap";
-
 const InputUiElement = ({
-  controlId,
+  style,
+  label,
   type,
-  placeholder,
   name,
-  value,
-  onChange,
+  placeholder,
   className,
   size,
-  error,
-  label,
-  helpText,
+  onChange,
+  onBlur,
   autoComplete,
-  style,
-  readOnly,
-  maxLength,
-  minLength,
+  value,
+  touched,
+  errors,
   icon,
+  helpText,
   ...props
 }) => {
-  const HelpValidText = () => (
-    <>
-      {helpText && <Form.Text muted>{helpText}</Form.Text>}
-      <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
-    </>
-  );
-
-  const InputGroupPrepend = ({ children }) => (
-    <InputGroup>
-      {children}
-      <InputGroup.Prepend>
-        <InputGroup.Text>{icon}</InputGroup.Text>
-      </InputGroup.Prepend>
-      <HelpValidText />
-    </InputGroup>
-  );
-
-  const FormGroup = ({ children }) => (
-    <Form.Group controlId={controlId} style={style}>
-      {children}
-      <HelpValidText />
-    </Form.Group>
-  );
-
-  const WrapInput = ({ children }) => {
-    if (icon) {
-      return <InputGroupPrepend>{children}</InputGroupPrepend>;
-    } else {
-      return <FormGroup>{children}</FormGroup>;
-    }
-  };
-
   return (
     <React.Fragment>
-      <WrapInput>
+      <InputGroup style={style}>
         {label && <Form.Label>{label}</Form.Label>}
         <Form.Control
           type={type}
@@ -65,13 +30,18 @@ const InputUiElement = ({
           className={className}
           size={size}
           onChange={onChange}
+          onBlur={onBlur}
           autoComplete={autoComplete}
-          readOnly={readOnly}
-          maxLength={maxLength}
-          minLength={minLength}
           {...props}
         />
-      </WrapInput>
+        <InputGroup.Prepend>
+          <InputGroup.Text>{icon}</InputGroup.Text>
+        </InputGroup.Prepend>
+        {touched && errors ? (
+          <div className="w-100 error-message">{errors}</div>
+        ) : null}
+      </InputGroup>
+      {helpText && <Form.Text muted>{helpText}</Form.Text>}
     </React.Fragment>
   );
 };
@@ -80,25 +50,24 @@ InputUiElement.defaultProps = {
   type: "text",
   className: "",
   autoComplete: "off",
-  readOnly: false,
 };
 
 InputUiElement.propTypes = {
+  style: PropTypes.object,
+  label: PropTypes.string,
+  type: PropTypes.oneOf(["text", "password", "email", "number"]).isRequired,
   name: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(["text", "email", "password", "number"]).isRequired,
   className: PropTypes.string,
-  value: PropTypes.any,
-  onChange: PropTypes.func,
-  controlId: PropTypes.string.isRequired,
   size: PropTypes.string,
-  style: PropTypes.object,
-  helpText: PropTypes.string,
+  onChange: PropTypes.func,
+  onBlur: PropTypes.func,
   autoComplete: PropTypes.string,
-  readOnly: PropTypes.bool,
-  maxLength: PropTypes.string,
-  minLenght: PropTypes.string,
+  value: PropTypes.string,
+  touched: PropTypes.bool,
+  errors: PropTypes.string,
   icon: PropTypes.element,
+  helpText: PropTypes.string,
 };
 
 const SelectUiElement = ({
@@ -107,9 +76,10 @@ const SelectUiElement = ({
   controlId,
   option,
   style,
-  defaultFirstOption
+  defaultFirstOption,
+  className,
 }) => (
-  <Form.Group controlId={controlId} style={style}>
+  <Form.Group controlId={controlId} style={style} className={className}>
     {label && <Form.Label>{label}</Form.Label>}
     <Form.Control as="select" size={size}>
       {defaultFirstOption && <option>{defaultFirstOption}</option>}
@@ -128,7 +98,7 @@ SelectUiElement.propTypes = {
   controlId: PropTypes.string,
   option: PropTypes.array.isRequired,
   style: PropTypes.object,
-  defaultFirstOption:PropTypes.string
+  defaultFirstOption: PropTypes.string,
 };
 
 const TextareaIuElement = ({
@@ -167,4 +137,3 @@ TextareaIuElement.protoTypes = {
 };
 
 export { InputUiElement, SelectUiElement, TextareaIuElement };
-

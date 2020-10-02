@@ -1,7 +1,10 @@
 import PropTypes from "prop-types";
-import { Form, InputGroup } from "react-bootstrap";
+import React, { useMemo } from "react";
+    
+import { Form, InputGroup, FormControl } from "react-bootstrap";
 const InputUiElement = ({
   style,
+  controlId,
   label,
   type,
   name,
@@ -15,34 +18,53 @@ const InputUiElement = ({
   touched,
   errors,
   icon,
-  helpText,
+  hint,
+  styleInput,
+  classFormGroup,
+  classIconGroup,
   ...props
 }) => {
+  
+  const FormGroup = ({ children }) => (
+    <Form.Group style={style} controlId={controlId} className={classFormGroup}>{children}</Form.Group>
+  );
+
+  const InputIconGroup = ({ children }) => (
+    <InputGroup style={style}>
+      <InputGroup.Prepend className="w-100">
+        {children}
+        <InputGroup.Text className={classIconGroup}>{icon}</InputGroup.Text>
+      </InputGroup.Prepend>
+    </InputGroup>
+  );
+
+  //FIXME: Input only work if they dont have an icon
+  const Wraper = useMemo( ()=> ({ children }) => {
+    return (icon) ? <InputIconGroup children={children} /> : <FormGroup children={children} />;
+  },[icon]);
+
   return (
-    <React.Fragment>
-      <InputGroup style={style}>
+    <>
+      <Wraper>
         {label && <Form.Label>{label}</Form.Label>}
         <Form.Control
           type={type}
           placeholder={placeholder}
           name={name}
-          value={value}
           className={className}
           size={size}
           onChange={onChange}
           onBlur={onBlur}
           autoComplete={autoComplete}
+          defaultValue={value}
           {...props}
         />
-        <InputGroup.Prepend>
-          <InputGroup.Text>{icon}</InputGroup.Text>
-        </InputGroup.Prepend>
-        {touched && errors ? (
-          <div className="w-100 error-message">{errors}</div>
-        ) : null}
-      </InputGroup>
-      {helpText && <Form.Text muted>{helpText}</Form.Text>}
-    </React.Fragment>
+      </Wraper>
+      {touched && errors ? (
+        <div className="w-100 error-message">{errors}</div>
+      ) : null}
+      {hint && <Form.Text muted>{hint}</Form.Text>}
+    </>
   );
 };
 
@@ -54,10 +76,11 @@ InputUiElement.defaultProps = {
 
 InputUiElement.propTypes = {
   style: PropTypes.object,
+  controlId: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.oneOf(["text", "password", "email", "number"]).isRequired,
   name: PropTypes.string.isRequired,
-  placeholder: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
   className: PropTypes.string,
   size: PropTypes.string,
   onChange: PropTypes.func,
@@ -67,7 +90,7 @@ InputUiElement.propTypes = {
   touched: PropTypes.bool,
   errors: PropTypes.string,
   icon: PropTypes.element,
-  helpText: PropTypes.string,
+  hint: PropTypes.string,
 };
 
 const SelectUiElement = ({
@@ -103,37 +126,24 @@ SelectUiElement.propTypes = {
 
 const TextareaIuElement = ({
   rows,
-  label,
   placeholder,
-  controlId,
   size,
+  icon,
   style,
   className,
 }) => (
-  <Form.Group controlId={controlId} style={style}>
-    {label && <Form.Label>{label}</Form.Label>}
-    <Form.Control
-      className={className}
+  <InputGroup>
+    <FormControl className={className}
+      placeholder={placeholder}
       as="textarea"
       rows={rows}
       placeholder={placeholder}
-      size={size}
-    />
-  </Form.Group>
+      size={size} />
+      <InputGroup.Prepend>
+        <InputGroup.Text>{icon}</InputGroup.Text>
+      </InputGroup.Prepend>
+  </InputGroup>
 );
 
-TextareaIuElement.defaultProps = {
-  rows: "3",
-};
-
-TextareaIuElement.protoTypes = {
-  rows: PropTypes.string,
-  label: PropTypes.string,
-  placeholder: PropTypes.string,
-  controlId: PropTypes.string,
-  size: PropTypes.string,
-  style: PropTypes.object,
-  className: PropTypes.string,
-};
 
 export { InputUiElement, SelectUiElement, TextareaIuElement };

@@ -51,20 +51,36 @@ export const DynamicSelect = ({
   placeholder,
   options,
   loading,
-  isMulti
+  isMulti,
+  onChange,
+  onBlur,
+  value,
+  touched,
+  errors,
+  ...props
 }) => {
   const animatedComponents = makeAnimated();
   return (
-    <Select
-      name={name}
-      className={classNames}
-      closeMenuOnSelect={closeMenuOnSelect}
-      components={animatedComponents}
-      id={id}
-      isMulti={isMulti}
-      instanceId={instanceId}
-      placeholder={placeholder}
-      isLoading={loading} 
-      options={options}/>
+    <>
+      <Select
+        className={classNames}
+        closeMenuOnSelect={closeMenuOnSelect}
+        components={animatedComponents}
+        defaultValue={value}
+        id={id}
+        instanceId={instanceId}
+        isLoading={loading}
+        isMulti={isMulti}
+        name={name}
+        onBlur={onBlur}
+        onChange={onChange}
+        options={options}
+        placeholder={placeholder}
+        {...props}
+      />
+      {touched && errors ? (
+        <div className="w-100 error-message">{errors}</div>
+      ) : null}
+    </>
   );
 };

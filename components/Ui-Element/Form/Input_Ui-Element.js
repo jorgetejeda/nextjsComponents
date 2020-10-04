@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 import React from "react";
-import { Form, InputGroup} from "react-bootstrap";
+import { Form, InputGroup } from "react-bootstrap";
 
-export const inputsProps={
+const inputsProps = {
   label: PropTypes.string,
   size: PropTypes.string,
   style: PropTypes.object,
@@ -13,9 +13,13 @@ export const inputsProps={
   errors: PropTypes.string,
   className: PropTypes.string,
   touched: PropTypes.bool,
-}
+  autoComplete: PropTypes.string,
+  placeholder: PropTypes.string,
+  type: PropTypes.oneOf(["text", "password", "email", "number"]).isRequired,
+  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+};
 
-const InputUiElement = ({
+export const InputUiElement = ({
   style,
   controlId,
   label,
@@ -37,7 +41,11 @@ const InputUiElement = ({
 }) => {
   return (
     <>
-      <Form.Group style={style} controlId={controlId} className={classFormGroup}>
+      <Form.Group
+        style={style}
+        controlId={controlId}
+        className={classFormGroup}
+      >
         {label && <Form.Label>{label}</Form.Label>}
         <Form.Control
           type={type}
@@ -131,9 +139,5 @@ InputIconUiElement.defaultProps = {
 
 InputIconUiElement.propTypes = {
   ...inputsProps,
-  autoComplete: PropTypes.string,
-  placeholder: PropTypes.string,
-  type: PropTypes.oneOf(["text", "password", "email", "number"]).isRequired,
-  value: PropTypes.string,
-  icon:PropTypes.element
+  icon: PropTypes.element,
 };

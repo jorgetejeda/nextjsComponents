@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
-import { FormControl, InputGroup, Form } from "react-bootstrap";
+import { FormControl, InputGroup } from "react-bootstrap";
+import { HintUiElement } from "./Hint_Ui-Element";
 
 export const TextareaIuElement = ({
   rows,
@@ -13,6 +14,7 @@ export const TextareaIuElement = ({
   touched,
   errors,
   hint,
+  limit,
   value,
   autoComplete,
   ...props
@@ -37,12 +39,8 @@ export const TextareaIuElement = ({
       </InputGroup.Prepend>
     </InputGroup>
     <div className="d-flex flex-wrap flex-row justify-content-between">
-      {touched && errors ? (
-        <div className="error-message">{errors}</div>
-      ) : null}
-      {/* FIXME: Corregir la posicion del hint y los errores que aparecen en el campo
-      Estos deben aparecer uno al lado del otro */}
-      {hint && <Form.Text muted>{hint}</Form.Text>}
+      {touched && errors ? <div className="error-message">{errors}</div> : null}
+      <HintUiElement hint={hint} limit={limit} value={value} />
     </div>
   </>
 );
@@ -55,6 +53,7 @@ TextareaIuElement.propTypes = {
   onChange: PropTypes.func,
   name: PropTypes.string.isRequired,
   hint: PropTypes.string,
+  limit:PropTypes.number,
   errors: PropTypes.string,
   className: PropTypes.string,
   touched: PropTypes.bool,
